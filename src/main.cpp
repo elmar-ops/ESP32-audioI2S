@@ -21,10 +21,10 @@
 #include "FS.h"
 
 // Digital I/O used
-#define SD_CS          5
-#define SPI_MOSI      23
-#define SPI_MISO      19
-#define SPI_SCK       18
+#define SD_CS         13
+#define SPI_MOSI      15
+#define SPI_MISO      2
+#define SPI_SCK       14
 #define I2S_DOUT      25
 #define I2S_BCLK      27
 #define I2S_LRC       26
@@ -41,34 +41,25 @@ void setup() {
     SPI.setFrequency(1000000);
     Serial.begin(115200);
     SD.begin(SD_CS);
-    WiFi.mode(WIFI_STA);
-    wifiMulti.addAP(ssid.c_str(), password.c_str());
-    wifiMulti.run();
-    if(WiFi.status() != WL_CONNECTED){
-        WiFi.disconnect(true);
-        wifiMulti.run();
-    }
-    audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
-    audio.setVolume(12); // 0...21
 
-//    audio.connecttoFS(SD, "/320k_test.mp3");
+    audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
+    audio.setVolume(3); // 0...21
+
+    audio.connecttoFS(SD, "/320k_test.mp3");
 //    audio.connecttoFS(SD, "test.wav");
 //    audio.connecttohost("http://www.wdr.de/wdrlive/media/einslive.m3u");
 //    audio.connecttohost("http://macslons-irish-pub-radio.com/media.asx");
 //    audio.connecttohost("http://mp3.ffh.de/radioffh/hqlivestream.aac"); //  128k aac
-      audio.connecttohost("http://mp3.ffh.de/radioffh/hqlivestream.mp3"); //  128k mp3
+//    audio.connecttohost("http://mp3.ffh.de/radioffh/hqlivestream.mp3"); //  128k mp3
 //    audio.connecttospeech("Wenn die Hunde schlafen, kann der Wolf gut Schafe stehlen.", "de");
 }
 
 void loop()
 {
     audio.loop();
-    if(Serial.available()){ // put streamURL in serial monitor
-        audio.stopSong();
-        String r=Serial.readString(); r.trim();
-        if(r.length()>5) audio.connecttohost(r);
-        log_i("free heap=%i", ESP.getFreeHeap());
-    }
+    //uint32_t getAudioCurrentTime();
+    //uint32_t getAudioFileDuration();
+    
 }
 
 // optional
